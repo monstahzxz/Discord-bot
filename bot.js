@@ -2,8 +2,13 @@ var Discordie = require("discordie");
 var Events = Discordie.Events;
  
 var client = new Discordie();
+
+var request=require('request');
+  var url="https://api.twitch.tv/kraken/streams/";
+  var twit="..twitch",tid='';
  
-client.connect({ token: "Mzk1OTUxNTEyNzY3MTY4NTE0.DSaZpA.Gvx79_yIP0BCKCoMlgEf6b91bUE" });
+
+ client.connect({ token: "Mzk1OTUxNTEyNzY3MTY4NTE0.DSaZpA.Gvx79_yIP0BCKCoMlgEf6b91bUE" });
  
 
 client.Dispatcher.on(Events.GATEWAY_READY, e => {
@@ -12,6 +17,7 @@ client.Dispatcher.on(Events.GATEWAY_READY, e => {
  
 client.Dispatcher.on(Events.MESSAGE_CREATE, e => {
   var flag=1;
+  var tflag=1;
   if (e.message.content == "whos dank?")
     e.message.channel.sendMessage("zorin is dank");
   
@@ -79,7 +85,7 @@ client.Dispatcher.on(Events.MESSAGE_CREATE, e => {
 
   else if(e.message.content=="<@395951512767168514>")
   {
-  	e.message.channel.sendMessage("Sup, im a mathematical genius\nHit me up with some simple stuff like 1+1\nOr ask me the time with '..time'");
+  	e.message.channel.sendMessage("See if your favourite streamers are online! Use '..twitch <channel-ID>'\nI do quickmafs too (simple mafs pls)\nYou can ask me the time too! Do '..time'\nkthnxbye");
   }
   var id="<@395951512767168514>"
   for(var i=0;i<id.length;++i)
@@ -130,21 +136,32 @@ client.Dispatcher.on(Events.MESSAGE_CREATE, e => {
   		e.message.channel.sendMessage("ONLINE");
    });
   }*/
-  var request=require('request');
-  var url="https://api.twitch.tv/kraken/streams/thewarowl";
-
-  if(e.message.content=="do it")
-  {
-     request.get({
-    url: url,
-    json: true,
-    headers: {"Client-ID":"elhkr6lyifkxd5r425s18wh3hqhrri"}
-  },(err,res,data)=>{
-  	if(data.stream!==null)
-  		e.message.channel.sendMessage("ONLINE");
-  	else
-  		e.message.channel.sendMessage("OFFLINE");
-  });
+  
+  else 
+  { 
+      for(var i=0;i<8;++i)
+      	if(e.message.content[i]!==twit[i])
+      		tflag=0;
+      if(tflag)
+      {
+       for(i=9;i<e.message.content.length;++i)
+        	 {
+        	 	url+=e.message.content[i];	
+        	 	tid+=e.message.content[i];
+        	 }		
+       request.get({
+       url: url,
+       json: true,
+       headers: {"Client-ID":"elhkr6lyifkxd5r425s18wh3hqhrri"}
+       },(err,res,data)=>{
+  	  if(data.stream!==null)
+  	 	{
+  	 		e.message.channel.sendMessage("LIVE!!");
+  	 		e.message.channel.sendMessage("https://www.twitch.tv/"+tid);
+  	 	}	
+  	  else
+   		e.message.channel.sendMessage("OFFLINE");
+      });
+     }
   }	
-
 });
