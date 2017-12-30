@@ -18,6 +18,8 @@ client.Dispatcher.on(Events.GATEWAY_READY, e => {
 client.Dispatcher.on(Events.MESSAGE_CREATE, e => {
   var flag=1;
   var tflag=1;
+  url="https://api.twitch.tv/kraken/streams/";
+  tid='';
   if (e.message.content == "whos dank?")
     e.message.channel.sendMessage("zorin is dank");
   
@@ -157,8 +159,7 @@ client.Dispatcher.on(Events.MESSAGE_CREATE, e => {
   	  if(data.stream!==null)
   	 	{
   	 		e.message.channel.sendMessage("LIVE!!");
-  	 		e.message.channel.sendMessage("https://www.twitch.tv/"+tid);
-  	 	}	
+  	 		e.message.channel.sendMessage("https://www.twitch.tv/"+tid);  	 	}	
   	  else
    		e.message.channel.sendMessage("OFFLINE");
       });
