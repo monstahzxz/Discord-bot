@@ -21,10 +21,11 @@ var client = new Discord.Client();
 
  function playsong(connection, message) {
     //server=servers[message.guild.id];	
-    console.log(server.queue);
+    //console.log(server.queue);
     server.dispatcher=connection.playStream(ytdl(server.queue[0],{filter:"audioonly"})); 
     server.dispatcher.on("end",function(){
     	server.queue.shift();
+    	squeue.shift();
     	if(server.queue[0])
     		playsong(connection,message);
      
@@ -35,23 +36,12 @@ var client = new Discord.Client();
  }
 
 
-function songQueue(query,e)
-{
-	var result;
-	for(var i=0;i<query.length;++i)
-         {
-         	request("https://www.googleapis.com/youtube/v3/search?type=video&part=snippet&q="+query[i]+"&key=AIzaSyBd8Xmi2tKXhS0C7Gt_-HVVcXvBrf9eLiw",(err,res,data)=>{
-        	 result = JSON.parse(data);
-        	 squeue.push(result.items[0].snippet.title);
-        });	 
-         } 
-}
-
 
 function searchSong(query,callback) {
 	var result;
         request("https://www.googleapis.com/youtube/v3/search?type=video&part=snippet&q="+query+"&key=AIzaSyBd8Xmi2tKXhS0C7Gt_-HVVcXvBrf9eLiw",(err,res,data)=>{
         	 result = JSON.parse(data);
+        	 squeue.push(result.items[0].snippet.title);
         	callback(result.items[0].id.videoId);
         });
 }
@@ -107,7 +97,11 @@ else if(e.content.split(" ")[0]=="..play")
 	    	 });
 	    	 }
 	    	else
+	    	{
+	    	    searchSong(surl,function(id){		
 	    	    server.queue.push(surl);
+	    	});
+	    	}
 	    }
 	    else
            {	
@@ -124,20 +118,18 @@ else if(e.content.split(" ")[0]=="..play")
     	     }
     	     else
     	     {
+    	     	searchSong(surl,function(id){
     	      	server.queue.push(surl);
 	        e.member.voiceChannel.join().then(function(connection) {
 	     	 playsong(connection,e);	
     	     });
+	 });
 	     }
 
           }
        }   
-else if(e.content=="..queue")
-	{
-		console.log(squeue);
-		songQueue(server.queue);
-		e.channel.send(squeue);
-	}
+else if(e.content=="..queue")		
+	      e.channel.send(squeue);
 
 else if(e.content=="..skip")
 {
@@ -153,6 +145,7 @@ else if(e.content=="..stop")
    			for(var i=0;i<server.queue.length;++i)
    			   server.queue.shift();
    		       e.member.voiceChannel.leave();
+   		       squeue=[];
    		}
    	else
    		e.channel.send("Queue is already empty!!!");       
