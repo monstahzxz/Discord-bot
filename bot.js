@@ -128,8 +128,13 @@ else if(e.content.split(" ")[0]=="..play")
 
           }
        }   
-else if(e.content=="..queue")		
-	      e.channel.send(squeue);
+else if(e.content=="..queue")	
+{	
+	      var songq=[];
+	      for(var i=0;i<squeue.length;++i)
+	      		songq.push((i+1)+". "+squeue[i]);
+	      e.channel.send(songq);
+}	      
 
 else if(e.content=="..skip")
 {
