@@ -15,15 +15,21 @@ var client = new Discord.Client();
   var id;
   var squeue=[];
 
- client.login( "Mzk1OTUxNTEyNzY3MTY4NTE0.DSaZpA.Gvx79_yIP0BCKCoMlgEf6b91bUE" );
+
+  var token=fs.readFileSync("token.txt", "utf8");
+
+ client.login(token);
+
+
 
 
 
  function playsong(connection, message) {
     //server=servers[message.guild.id];	
     //console.log(server.queue);
-    server.dispatcher=connection.playStream(ytdl(server.queue[0],{filter:"audioonly"})); 
+    server.dispatcher=connection.playStream(ytdl(server.queue[0],{filter:"audioonly"}));
     server.dispatcher.on("end",function(){
+    	console.log("over");
     	server.queue.shift();
     	squeue.shift();
     	if(server.queue[0])
@@ -56,7 +62,6 @@ client.on("message", e => {
   var flag=1;
   var tflag=1;
 
-
   url="https://api.twitch.tv/kraken/streams/";
   tid='';
 
@@ -79,7 +84,7 @@ client.on("message", e => {
 
 
 
-else if(e.content.split(" ")[0]=="..play")
+else if(e.content.split(" ")[0]=="..play"&&e.member.voiceChannel)
 	{	
 	    if(!servers[e.guild.id]) {
 	    	servers[e.guild.id]={
@@ -128,7 +133,7 @@ else if(e.content.split(" ")[0]=="..play")
 
           }
        }   
-else if(e.content=="..queue")	
+else if(e.content=="..queue"&&e.member.voiceChannel)	
 {	
 	      var songq=[];
 	      for(var i=0;i<squeue.length;++i)
@@ -136,26 +141,35 @@ else if(e.content=="..queue")
 	      e.channel.send(songq);
 }	      
 
-else if(e.content=="..skip")
+else if(e.content=="..skip"&&e.member.voiceChannel)
 {
 	if(server.dispatcher)
 		server.dispatcher.end();
 }
 
-else if(e.content=="..stop")
+else if(e.content=="..stop"&&e.member.voiceChannel)
    {
    	if(server.queue[0])
    		{
-   			e.channel.send("Emptying queue!!");
+   			e.channel.send("`Emptying queue!!`");
    			for(var i=0;i<server.queue.length;++i)
    			   server.queue.shift();
    		       e.member.voiceChannel.leave();
    		       squeue=[];
    		}
    	else
-   		e.channel.send("Queue is already empty!!!");       
-   }    
-
+   		e.channel.send("`Queue is already empty!!!`");       
+   }     
+else if(e.content=="..pause"&&e.member.voiceChannel)
+ {
+ 	e.channel.send("Player has been `paused`");
+ 	server.dispatcher.pause();
+ }
+else if(e.content=="..unpause"&&e.member.voiceChannel)
+{
+	e.channel.send("Player has been `unpaused`");
+	server.dispatcher.resume();
+} 
 
 
 
@@ -179,7 +193,7 @@ else if(e.content=="..stop")
 
   else if(e.content[0]>='0'&&e.content[0]<='9')
   {
-  	var p=1,q=0,r=1;
+  	var p=1,q=0,r=1,t=0;
   	var x=0,y=0,co=0,res=0;
   	for(var i=0;i<e.content.length;++i)
   	{
@@ -187,10 +201,12 @@ else if(e.content=="..stop")
   			{ p=0; break; }
   		else if(e.content[i]>='0'&&e.content[i]<='9')
   			q=1;
-  		else if(!(e.content[i]=='+'||e.content[i]=='-'||e.content[i]=='/'||e.content[i]=='*'))
-                 r=0;
+         	else if(e.content[i]=='+'||e.content[i]=='-'||e.content[i]=='/'||e.content[i]=='*')
+         		t=1;
+         	else if(!(e.content[i]=='+'||e.content[i]=='-'||e.content[i]=='/'||e.content[i]=='*'))
+                	r=0;
   	}
-    if(p*r*q)
+    if(p*r*q*t)
     {
     	for(var i=0;i<e.content.length;++i)
     	{   
@@ -226,19 +242,11 @@ else if(e.content=="is pubg an esport?")
 
   else if(e.content=="<@395951512767168514>")
   {
-  	e.channel.send("See if your favourite streamers are online! Use '..twitch <channel-ID>'\nI do quickmafs too (simple mafs pls)\nYou can ask me the time too! Do '..time'\nkthnxbye");
+  	//e.channel.send("Adhu can suck my virtual dick",{"tts":true});
+  	e.channel.send("I can sing :3 do ..play <utoob url or name of song>\nSee if your favourite streamers are online! Use '..twitch <channel-ID>'\nI do quickmafs too (simple mafs pls)\nYou can ask me the time too! Do '..time'\nkthnxbye");
   }
-  var id1="<@395951512767168514>"
-  for(var i=0;i<id1.length;++i)
-  {
-  	if(e.content[i]!=id1[i])
-  		flag=0;
-  }	
-  	if(flag&&e.content.length>21)
-  	{
-      e.channel.send("sorry, i dont speak inglis, pls ask my good frand zorin");
-  	}
   
+
 
 
 
