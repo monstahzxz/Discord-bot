@@ -11,13 +11,13 @@ var client = new Discord.Client();
   var twit="..twitch",tid='';
   var curse=["wtf","fuck","fuck off","stfu"];
   var servers={};
-  var yt_api_key="AIzaSyBd8Xmi2tKXhS0C7Gt_-HVVcXvBrf9eLiw";
   var id;
   var squeue=[];
 
-
+  var yt_api_key=fs.readFileSync("ytkey.txt","utf8");
   var token=fs.readFileSync("token.txt", "utf8");
 
+ 
  client.login(token);
 
 
@@ -243,7 +243,7 @@ else if(e.content=="is pubg an esport?")
   else if(e.content=="<@395951512767168514>")
   {
   	//e.channel.send("Adhu can suck my virtual dick",{"tts":true});
-  	e.channel.send("I can sing :3 do ..play <utoob url or name of song>\nSee if your favourite streamers are online! Use '..twitch <channel-ID>'\nI do quickmafs too (simple mafs pls)\nYou can ask me the time too! Do '..time'\nkthnxbye");
+  	e.channel.send("I can sing :3 do ..play <utoob url or name of song>\nI do quickmafs too (simple mafs pls)\nYou can ask me the time too! Do '..time'\nkthnxbye");
   }
   
 
