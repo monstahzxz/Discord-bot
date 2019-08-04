@@ -73,12 +73,6 @@ client.on("message", e => {
 
 
 
-  else if(e.content=="wtf"||e.content=="fuck"||e.content=="fuck off"||e.content=="stfu")
-  	e.channel.send("no cursing pls");
-  
-
-
-
 
 
 
