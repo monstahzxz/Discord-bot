@@ -9,7 +9,6 @@ var client = new Discord.Client();
   var surl='';
   var url="https://api.twitch.tv/kraken/streams/";
   var twit="..twitch",tid='';
-  var curse=["wtf","fuck","fuck off","stfu"];
   var servers={};
   var id;
   var squeue=[];
